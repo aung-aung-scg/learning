@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: db
+  database: learning_development
+  username: learning_user
+  password: abc123$%^
+  pool: 5
+
+development:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+
+test:
+  <<: *default
+  database: learning_test
+
+production:
+  <<: *default
+  database: learning_production
+  url: <%= ENV['DATABASE_URL'] %>

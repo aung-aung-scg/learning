@@ -1,0 +1,25 @@
+# == Schema Information
+#
+# Table name: quiz_questions
+#
+#  id             :bigint           not null, primary key
+#  quiz_id        :bigint           not null
+#  question_text  :text
+#  question_type  :string
+#  options        :json
+#  correct_answer :string
+#  explanation    :text
+#  display_order  :integer
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the "{}" from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value

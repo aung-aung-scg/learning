@@ -1,47 +1,56 @@
 version: "3.9"
 
 services:
+  # PostgreSQL Database
   db:
     image: postgres:15
     environment:
-      POSTGRES_USER: japanese_user
-      POSTGRES_PASSWORD: securepassword
+      POSTGRES_USER: learning_user
+      POSTGRES_PASSWORD: abc123$%^
       POSTGRES_DB: learning_development
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U japanese_user"]
+      test: ["CMD-SHELL", "pg_isready -U learning_user"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  # Rails Backend
   backend:
     build:
       context: ./learning-backend
       dockerfile: Dockerfile
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3001 -b '0.0.0.0'"
     environment:
-      DATABASE_URL: postgres://japanese_user:securepassword@db:5432/learning_development
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: japanese_user
-      DB_PASSWORD: securepassword
-      DB_NAME: learning_development
+      DATABASE_URL: postgres://learning_user:abc123%24%25%5E@db:5432/learning_development
       RAILS_ENV: development
-      BUNDLE_PATH: /usr/local/bundle
-      LANG: C.UTF-8
+      FRONTEND_URL: http://frontend:3000  # For CORS
+    ports:
+      - "3001:3001"  # Different port than frontend
+    volumes:
+      - ./learning-backend:/rails
+      - bundle_cache:/usr/local/bundle
     depends_on:
       db:
         condition: service_healthy
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./learning-frontend
+      dockerfile: Dockerfile
+    environment:
+      REACT_APP_API_URL: http://backend:3001  # Docker internal URL
     ports:
       - "3000:3000"
     volumes:
-      - ./learning-backend:/rails
-      - bundle_cache:/usr/local/bundle  # Cache gems between container rebuilds
-    stdin_open: true  # For debugging
-    tty: true         # For debugging
+      - ./learning-frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

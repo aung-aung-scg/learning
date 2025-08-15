@@ -1,12 +1,20 @@
 version: "3.9"
 
 services:
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+
   # PostgreSQL Database
   db:
     image: postgres:15
     environment:
       POSTGRES_USER: learning_user
-      POSTGRES_PASSWORD: abc123$%^
+      POSTGRES_PASSWORD: "abc123$%^"
       POSTGRES_DB: learning_development
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -43,9 +51,9 @@ services:
       context: ./learning-frontend
       dockerfile: Dockerfile
     environment:
-      REACT_APP_API_URL: http://backend:3001  # Docker internal URL
+      VITE_API_URL: http://backend:3001  # Docker internal URL
     ports:
-      - "3000:3000"
+      - "3000:5173"
     volumes:
       - ./learning-frontend:/app
       - /app/node_modules

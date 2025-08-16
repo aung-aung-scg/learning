@@ -14,7 +14,7 @@ services:
     image: postgres:15
     environment:
       POSTGRES_USER: learning_user
-      POSTGRES_PASSWORD: "abc123$%^"
+      POSTGRES_PASSWORD: abc123
       POSTGRES_DB: learning_development
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -33,7 +33,7 @@ services:
       dockerfile: Dockerfile
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3001 -b '0.0.0.0'"
     environment:
-      DATABASE_URL: postgres://learning_user:abc123%24%25%5E@db:5432/learning_development
+      DATABASE_URL: postgres://learning_user:abc123@db:5432/learning_development
       RAILS_ENV: development
       FRONTEND_URL: http://frontend:3000  # For CORS
     ports:
